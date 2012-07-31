@@ -2,7 +2,7 @@ NAME
     Perinci::Sub::Wrapper::property::retry - Specify automatic retry
 
 VERSION
-    version 0.01
+    version 0.02
 
 SYNOPSIS
      # in function metadata
@@ -14,12 +14,42 @@ SYNOPSIS
 DESCRIPTION
     This property specifies retry behavior.
 
-    Values: a hash containing these keys 'n' (int, number of retries,
-    default is 0 which means no retry), 'delay' (int, number of seconds to
-    wait before each retry, default is 0 which means no wait between
-    retries), and 'success_statuses' (regex, which status is considered
-    success, default is "^(2..|304)$"). Or it can also be an integer
-    (specifying just 'n').
+    Values: a hash containing these keys:
+
+    *   n => INT (default: 0)
+
+        Number of retries, default is 0 which means no retry.
+
+    *   delay => INT (default: 0)
+
+        Number of seconds to wait before each retry, default is 0 which
+        means no wait between retries.
+
+    *   success_statuses => REGEX (default: '^(2..|304)$')
+
+        Which status is considered success.
+
+    *   fatal_statuses => REGEX
+
+        If set, specify that status matching this should be considered fatal
+        and no retry should be attempted.
+
+    *   non_fatal_statuses => REGEX
+
+        If set, specify that status *not* matching this should be considered
+        fatal and no retry should be attempted.
+
+    *   fatal_messages => REGEX
+
+        If set, specify that message matching this should be considered
+        fatal and no retry should be attempted.
+
+    *   non_fatal_messages => REGEX
+
+        If set, specify that message *not* matching this should be
+        considered fatal and no retry should be attempted.
+
+    Property value can also be an integer (specifying just 'n').
 
     If function does not return enveloped result (result_naked=0), which
     means there is no status returned, a function is assumed to fail only

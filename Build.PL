@@ -7,7 +7,8 @@ use Module::Build 0.3601;
 
 my %module_build_args = (
   "build_requires" => {
-    "Module::Build" => "0.3601"
+    "Module::Build" => "0.3601",
+    "Test::More" => "0.96"
   },
   "configure_requires" => {
     "Module::Build" => "0.3601"
@@ -17,7 +18,7 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Perinci-Sub-property-retry",
-  "dist_version" => "0.01",
+  "dist_version" => "0.02",
   "license" => "perl",
   "module_name" => "Perinci::Sub::property::retry",
   "recommends" => {},
@@ -25,7 +26,6 @@ my %module_build_args = (
   "requires" => {
     "Perinci" => 0,
     "Perinci::Sub::Wrapper" => "0.11",
-    "Test::More" => "0.96",
     "perl" => "5.010000"
   },
   "script_files" => []
