@@ -22,4 +22,4 @@ requires:
 resources:
   homepage: http://search.cpan.org/dist/Perinci-Sub-Property-retry/
   repository: http://github.com/sharyanto/perl-Perinci-Sub-Property-retry
-version: 0.03
+version: 0.04

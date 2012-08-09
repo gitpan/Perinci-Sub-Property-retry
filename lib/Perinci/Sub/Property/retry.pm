@@ -6,7 +6,7 @@ use warnings;
 
 use Perinci::Util qw(declare_property);
 
-our $VERSION = '0.03'; # VERSION
+our $VERSION = '0.04'; # VERSION
 
 declare_property(
     name => 'retry',
@@ -121,7 +121,7 @@ Perinci::Sub::Wrapper::Property::retry - Specify automatic retry
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
