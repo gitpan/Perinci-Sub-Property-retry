@@ -1,4 +1,4 @@
-package Perinci::Sub::Wrapper::property::retry;
+package Perinci::Sub::Wrapper::Property::retry;
 
 use 5.010;
 use strict;
@@ -6,7 +6,7 @@ use warnings;
 
 use Perinci::Util qw(declare_property);
 
-# VERSION
+our $VERSION = '0.03'; # VERSION
 
 declare_property(
     name => 'retry',
@@ -25,6 +25,7 @@ declare_property(
     ]}],
     wrapper => {
         meta => {
+            v       => 2,
             # very high, we want to trap errors as early as possible after eval,
             # so we can retry it.
             prio    => 0,
@@ -110,6 +111,18 @@ declare_property(
 1;
 # ABSTRACT: Specify automatic retry
 
+
+__END__
+=pod
+
+=head1 NAME
+
+Perinci::Sub::Wrapper::Property::retry - Specify automatic retry
+
+=head1 VERSION
+
+version 0.03
+
 =head1 SYNOPSIS
 
  # in function metadata
@@ -117,7 +130,6 @@ declare_property(
 
  # more detailed
  retry => {n=>3, delay=>10, success_statuses=>/^(2..|3..)$/},
-
 
 =head1 DESCRIPTION
 
@@ -170,9 +182,20 @@ is no status returned, a function is assumed to fail only when it dies.
 This property's wrapper implementation currently uses a simple loop around
 the eval block.
 
-
 =head1 SEE ALSO
 
 L<Perinci>
 
+=head1 AUTHOR
+
+Steven Haryanto <stevenharyanto@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Steven Haryanto.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
+

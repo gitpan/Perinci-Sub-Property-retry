@@ -1,5 +1,5 @@
 NAME
-    Perinci::Sub::Wrapper::property::retry - Specify automatic retry
+    Perinci::Sub::Wrapper::Property::retry - Specify automatic retry
 
 VERSION
     version 0.03
