@@ -8,6 +8,7 @@ use Module::Build 0.3601;
 my %module_build_args = (
   "build_requires" => {
     "Module::Build" => "0.3601",
+    "Perinci::Sub::Wrapper" => "0.30",
     "Test::More" => "0.96",
     "Test::Perinci::Sub::Wrapper" => 0
   },
@@ -19,13 +20,12 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "Perinci-Sub-Property-retry",
-  "dist_version" => "0.04",
+  "dist_version" => "0.05",
   "license" => "perl",
   "module_name" => "Perinci::Sub::Property::retry",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
-    "Perinci::Sub::Wrapper" => "0.30",
     "Perinci::Util" => 0,
     "perl" => "5.010000"
   },
