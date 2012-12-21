@@ -2,7 +2,7 @@ NAME
     Perinci::Sub::Property::retry - Specify automatic retry
 
 VERSION
-    version 0.05
+    version 0.06
 
 SYNOPSIS
      # in function metadata
