@@ -1,12 +1,12 @@
 package Perinci::Sub::Property::retry;
 
-use 5.010;
+use 5.010001;
 use strict;
 use warnings;
 
 use Perinci::Sub::PropertyUtil qw(declare_property);
 
-our $VERSION = '0.06'; # VERSION
+our $VERSION = '0.07'; # VERSION
 
 declare_property(
     name => 'retry',
@@ -52,39 +52,48 @@ declare_property(
 
             $self->select_section('before_eval');
             $self->push_lines(
-                '', 'my $retries = 0;',
+                '', 'my $_w_retries = 0;',
                 'RETRY: while (1) {');
             $self->indent;
 
+            # pass special variable for function to let it know about retries
+            $self->select_section('before_call_arg_validation');
+            my $args_as = $self->{_meta}{args_as};
+            if ($args_as eq 'hash') {
+                $self->push_lines('$args{-retries} = $_w_retries;');
+            } elsif ($args_as eq 'hashref') {
+                $self->push_lines('$args->{-retries} = $_w_retries;');
+            }
+
             $self->select_section('after_eval');
             if ($self->{_arg}{meta}{result_naked}) {
-                $self->push_lines('if ($eval_err) {');
+                $self->push_lines('if ($_w_eval_err) {');
             } else {
-                $self->push_lines('if ($eval_err || $res->[0] !~ qr/'.
+                $self->push_lines('if ($_w_eval_err || $_w_res->[0] !~ qr/'.
                                       $v->{success_statuses}.'/) {');
             }
             $self->indent;
             if ($v->{fatal_statuses}) {
-                $self->_errif('521', '"Can\'t retry (fatal status $res->[0])"',
-                              '$res->[0] =~ qr/'.$v->{fatal_statuses}.'/');
+                $self->_errif('521', '"Can\'t retry (fatal status $_w_res->[0])"',
+                              '$_w_res->[0] =~ qr/'.$v->{fatal_statuses}.'/');
             }
             if ($v->{non_fatal_statuses}) {
                 $self->_errif(
-                    '521', '"Can\'t retry (not non-fatal status $res->[0])"',
-                    '$res->[0] !~ qr/'.$v->{non_fatal_statuses}.'/');
+                    '521', '"Can\'t retry (not non-fatal status $_w_res->[0])"',
+                    '$_w_res->[0] !~ qr/'.$v->{non_fatal_statuses}.'/');
             }
             if ($v->{fatal_messages}) {
                 $self->_errif(
-                    '521', '"Can\'t retry (fatal message: $res->[1])"',
-                    '$res->[1] =~ qr/'.$v->{fatal_messages}.'/');
+                    '521', '"Can\'t retry (fatal message: $_w_res->[1])"',
+                    '$_w_res->[1] =~ qr/'.$v->{fatal_messages}.'/');
             }
             if ($v->{non_fatal_messages}) {
                 $self->_errif(
-                    '521', '"Can\'t retry (not non-fatal message $res->[1])"',
-                    '$res->[1] !~ qr/'.$v->{non_fatal_messages}.'/');
+                    '521', '"Can\'t retry (not non-fatal message $_w_res->[1])"',
+                    '$_w_res->[1] !~ qr/'.$v->{non_fatal_messages}.'/');
             }
             $self->_errif('521', '"Maximum retries reached"',
-                          '++$retries > '.$v->{n});
+                          '++$_w_retries > '.$v->{n});
             $self->push_lines('sleep '.int($v->{delay}).';')
                 if $v->{delay};
             $self->push_lines('next RETRY;');
@@ -93,10 +102,10 @@ declare_property(
             $self->indent;
             # return information on number of retries performed
             unless ($self->{_meta}{result_naked}) {
-                $self->push_lines('if ($retries) {');
-                $self->push_lines($self->{indent} . '$res->[3] //= {};');
-                $self->push_lines($self->{indent} . '$res->[3]{wrap_retries}' .
-                              ' = $retries;');
+                $self->push_lines('if ($_w_retries) {');
+                $self->push_lines($self->{_args}{indent} . '$_w_res->[3] //= {};');
+                $self->push_lines($self->{_args}{indent} . '$_w_res->[3]{retries}' .
+                              ' = $_w_retries;');
                 $self->push_lines('}');
             }
             $self->push_lines('last RETRY;');
@@ -111,9 +120,11 @@ declare_property(
 1;
 # ABSTRACT: Specify automatic retry
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -121,7 +132,7 @@ Perinci::Sub::Property::retry - Specify automatic retry
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -182,9 +193,28 @@ is no status returned, a function is assumed to fail only when it dies.
 This property's wrapper implementation currently uses a simple loop around
 the eval block.
 
+It also pass a special argument to the function C<-retries> so that function can
+be aware about retries.
+
 =head1 SEE ALSO
 
 L<Perinci>
+
+=head1 HOMEPAGE
+
+Please visit the project's homepage at L<https://metacpan.org/release/Perinci-Sub-Property-retry>.
+
+=head1 SOURCE
+
+Source repository is at L<https://github.com/sharyanto/perl-Perinci-Sub-Property-retry>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website L<https://rt.cpan.org/Public/Dist/Display.html?Name=Perinci-Sub-Property-retry>
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
 
 =head1 AUTHOR
 
@@ -192,10 +222,9 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Steven Haryanto.
+This software is copyright (c) 2014 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
